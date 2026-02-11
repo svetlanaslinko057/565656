@@ -100,7 +100,7 @@ async def start_node_backend():
     stderr_log = open("/var/log/supervisor/backend-node.err.log", "a")
     
     node_process = subprocess.Popen(
-        ["/app/backend/node_modules/.bin/tsx", "src/server-minimal.ts"],
+        ["/app/backend/node_modules/.bin/tsx", "src/server.ts"],
         cwd="/app/backend",
         env=env,
         stdout=stdout_log,

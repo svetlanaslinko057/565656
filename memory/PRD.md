@@ -1,82 +1,104 @@
-# FOMO - Connections Module PRD
+# FOMO Connections Module - PRD
 
-## Версия: 1.2.0
+## Версия: 1.3.0 (Seed Fixed)
 ## Дата: 2026-02-12
 
 ---
 
-## Статус: ✅ ГОТОВО С SEED DATA
+## ✅ ИСПРАВЛЕНО: Автоматический Seed
 
-### Работающие сервисы:
-| Сервис | Порт | Статус |
-|--------|------|--------|
-| Frontend (React) | 3000 | ✅ RUNNING |
-| Python Proxy | 8001 | ✅ RUNNING |
-| Node.js Backend | 8003 | ✅ RUNNING |
-| MongoDB | 27017 | ✅ RUNNING |
-| Twitter Parser V2 | 5001 | ⏳ Требует cookies |
+### Скрипты:
 
-### Seed данные загружены:
-- ✅ 10 профилей в `connections_author_profiles`
-- ✅ 18 unified accounts в `connections_unified_accounts`
-- ✅ 70 taxonomy memberships
-- ✅ 23 twitter accounts
-- ✅ 2 influencer clusters
+| Файл | Описание |
+|------|----------|
+| `/app/scripts/seed_all.sh` | Полный seed всех данных (10 профилей, taxonomy, clusters) |
+| `/app/scripts/startup.sh` | Startup скрипт (вызывает seed_all.sh) |
 
-### Работающие страницы с данными:
-- ✅ `/connections` - 10 аккаунтов (Vitalik, CZ, a16z, paradigm...)
-- ✅ `/connections?preset=SMART` - Unified page с taxonomy
-- ✅ API `/api/connections/accounts` - полный список
-- ✅ API `/api/connections/unified` - facet/preset query
+### Запуск при развертывании:
 
----
+```bash
+# Обязательно после клонирования:
+chmod +x /app/scripts/seed_all.sh /app/scripts/startup.sh
+/app/scripts/seed_all.sh
+sudo supervisorctl restart backend frontend
+```
 
-## Что нужно для парсинга
+### Что seed создаёт:
 
-### ⚠️ Twitter Cookies (для live данных)
-
-Seed данные статичны. Для получения live данных из Twitter:
-
-1. **Установить Chrome Extension** (`/frontend/public/fomo_extension_v1.3.0/`)
-2. **Экспортировать cookies** авторизованного Twitter аккаунта
-3. **Загрузить через API**:
-   ```bash
-   POST /api/v4/twitter/sessions
-   { "label": "...", "cookies": [...] }
-   ```
+| Collection | Records | Описание |
+|------------|---------|----------|
+| connections_author_profiles | 10 | Главная страница /connections |
+| connections_unified_accounts | 10 | Unified page с facets |
+| connections_taxonomy_membership | 22 | Taxonomy presets (SMART, INFLUENCE, VC) |
+| influencer_clusters | 2 | Кластеры (VC_ELITE, ANALYST_HUB) |
+| twitter_egress_slots | 1 | Parser Slot |
+| proxy_slots | 1 | Direct slot |
 
 ---
 
 ## Архитектура
 
 ```
-Frontend (3000) → Python Proxy (8001) → Node.js Fastify (8003) → MongoDB
+Frontend (3000) → Python Proxy (8001) → Node.js (8003) → MongoDB (27017)
                                               ↓
-                                     Twitter Parser V2 (5001)
+                                     Parser V2 (5001) [requires cookies]
 ```
 
-## Seed аккаунты
+---
+
+## Seed Аккаунты
 
 | Handle | Category | Influence | Risk |
 |--------|----------|-----------|------|
-| vitalikbuterin | FOUNDER | 990 | Low |
-| cz_binance | FOUNDER | 980 | Low |
-| a16z | VC | 950 | Low |
-| paradigm | VC | 920 | Low |
-| brian_armstrong | FOUNDER | 900 | Low |
-| cobie | KOL | 880 | Low |
-| raoulpal | KOL | 850 | Low |
-| lookonchain | ANALYST | 780 | Low |
-| hsaka | KOL | 750 | Medium |
-| pentoshi | KOL | 720 | Medium |
+| @vitalikbuterin | FOUNDER | 990 | Low |
+| @cz_binance | FOUNDER | 980 | Low |
+| @a16z | VC | 950 | Low |
+| @paradigm | VC | 920 | Low |
+| @brian_armstrong | FOUNDER | 900 | Low |
+| @cobie | KOL | 880 | Low |
+| @raoulpal | KOL | 850 | Low |
+| @lookonchain | ANALYST | 780 | Low |
+| @hsaka | KOL | 750 | Medium |
+| @pentoshi | KOL | 720 | Medium |
+
+---
+
+## Важные коллекции MongoDB
+
+### Для /connections page:
+- `connections_author_profiles` - использует `listAuthorProfiles()`
+
+### Для /connections?preset=X:
+- `connections_unified_accounts` - использует `getUnifiedAccounts()`
+- `connections_taxonomy_membership` - для presets (SMART, INFLUENCE, VC)
+
+### Для парсинга:
+- `twitter_egress_slots` - слоты для парсера
+- `user_twitter_accounts` - Twitter сессии с cookies
+
+---
+
+## API Endpoints
+
+```bash
+# Main page
+GET /api/connections/accounts
+
+# Unified page
+GET /api/connections/unified?preset=SMART
+GET /api/connections/unified?facet=INFLUENCE
+
+# Stats
+GET /api/connections/unified/stats
+```
 
 ---
 
 ## Следующие шаги
 
-1. **Загрузить Twitter cookies** для live парсинга
-2. **Запустить Parser V2** на порту 5001
-3. **Сохранить на GitHub**
+1. ✅ Seed данные зафиксированы в `/app/scripts/seed_all.sh`
+2. Сохранить на GitHub
+3. При следующем развертывании: просто запустить `seed_all.sh`
 
 ---
 

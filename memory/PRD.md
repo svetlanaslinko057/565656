@@ -1,104 +1,74 @@
 # FOMO Connections Module - PRD
 
-## Версия: 1.3.0 (Seed Fixed)
+## Версия: 1.4.0 (Mobile Responsive)
 ## Дата: 2026-02-12
 
 ---
 
-## ✅ ИСПРАВЛЕНО: Автоматический Seed
+## ✅ ВЫПОЛНЕНО: Мобильный Адаптив Connections
 
-### Скрипты:
+### Поддерживаемые устройства:
+
+| Устройство | Viewport | Статус |
+|------------|----------|--------|
+| iPhone SE | 320px | ✅ Работает |
+| iPhone 14 | 375px | ✅ Работает |
+| iPad | 768px | ✅ Работает |
+| iPad Pro | 1024px | ✅ Работает |
+| Desktop | 1920px | ✅ Работает |
+| Landscape | любой | ✅ Работает |
+
+### Что реализовано:
+
+1. **Mobile (<768px)**:
+   - Карточки вместо таблицы
+   - Stats 2x2 grid
+   - Tabs с горизонтальным скроллом
+   - Touch-friendly кнопки (44px min)
+   - Safe area поддержка (iPhone notch)
+
+2. **Tablet (768px-1023px)**:
+   - Таблица с горизонтальным скроллом
+   - Stats 4 колонки
+   - Все tabs видны
+
+3. **Desktop (≥1024px)**:
+   - Полная таблица с 6 колонками
+   - Engagement и Posts колонки
+
+### Файлы:
 
 | Файл | Описание |
 |------|----------|
-| `/app/scripts/seed_all.sh` | Полный seed всех данных (10 профилей, taxonomy, clusters) |
-| `/app/scripts/startup.sh` | Startup скрипт (вызывает seed_all.sh) |
-
-### Запуск при развертывании:
-
-```bash
-# Обязательно после клонирования:
-chmod +x /app/scripts/seed_all.sh /app/scripts/startup.sh
-/app/scripts/seed_all.sh
-sudo supervisorctl restart backend frontend
-```
-
-### Что seed создаёт:
-
-| Collection | Records | Описание |
-|------------|---------|----------|
-| connections_author_profiles | 10 | Главная страница /connections |
-| connections_unified_accounts | 10 | Unified page с facets |
-| connections_taxonomy_membership | 22 | Taxonomy presets (SMART, INFLUENCE, VC) |
-| influencer_clusters | 2 | Кластеры (VC_ELITE, ANALYST_HUB) |
-| twitter_egress_slots | 1 | Parser Slot |
-| proxy_slots | 1 | Direct slot |
+| `/app/frontend/src/pages/ConnectionsPage.jsx` | Главный компонент с адаптивом |
+| `/app/frontend/src/styles/connections-mobile.css` | Мобильные стили |
 
 ---
 
-## Архитектура
+## Архитектура сервисов
 
-```
-Frontend (3000) → Python Proxy (8001) → Node.js (8003) → MongoDB (27017)
-                                              ↓
-                                     Parser V2 (5001) [requires cookies]
-```
-
----
-
-## Seed Аккаунты
-
-| Handle | Category | Influence | Risk |
-|--------|----------|-----------|------|
-| @vitalikbuterin | FOUNDER | 990 | Low |
-| @cz_binance | FOUNDER | 980 | Low |
-| @a16z | VC | 950 | Low |
-| @paradigm | VC | 920 | Low |
-| @brian_armstrong | FOUNDER | 900 | Low |
-| @cobie | KOL | 880 | Low |
-| @raoulpal | KOL | 850 | Low |
-| @lookonchain | ANALYST | 780 | Low |
-| @hsaka | KOL | 750 | Medium |
-| @pentoshi | KOL | 720 | Medium |
+| Сервис | Порт | Статус |
+|--------|------|--------|
+| Frontend | 3000 | ✅ RUNNING |
+| Python Proxy | 8001 | ✅ RUNNING |
+| Node.js Backend | 8003 | ✅ RUNNING |
+| MongoDB | 27017 | ✅ RUNNING |
+| Twitter Parser | 5001 | ⏳ Требует cookies |
 
 ---
 
-## Важные коллекции MongoDB
+## Seed данные
 
-### Для /connections page:
-- `connections_author_profiles` - использует `listAuthorProfiles()`
-
-### Для /connections?preset=X:
-- `connections_unified_accounts` - использует `getUnifiedAccounts()`
-- `connections_taxonomy_membership` - для presets (SMART, INFLUENCE, VC)
-
-### Для парсинга:
-- `twitter_egress_slots` - слоты для парсера
-- `user_twitter_accounts` - Twitter сессии с cookies
-
----
-
-## API Endpoints
-
-```bash
-# Main page
-GET /api/connections/accounts
-
-# Unified page
-GET /api/connections/unified?preset=SMART
-GET /api/connections/unified?facet=INFLUENCE
-
-# Stats
-GET /api/connections/unified/stats
-```
+- 10 профилей в `connections_author_profiles`
+- Скрипт: `/app/scripts/seed_all.sh`
 
 ---
 
 ## Следующие шаги
 
-1. ✅ Seed данные зафиксированы в `/app/scripts/seed_all.sh`
+1. ✅ Мобильный адаптив Connections завершён
 2. Сохранить на GitHub
-3. При следующем развертывании: просто запустить `seed_all.sh`
+3. При необходимости - адаптив других страниц (Graph, Radar, Backers)
 
 ---
 

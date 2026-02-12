@@ -318,6 +318,75 @@ export const IconSignal = ({ size = 20, className = '', color }) => (
   </IconWrapper>
 );
 
+// ============================================================
+// NARRATIVE STATES
+// ============================================================
+
+/** Seeding - plant sprout */
+export const IconSeeding = ({ size = 20, className = '', color }) => (
+  <IconWrapper size={size} className={className} color={color}>
+    <path d="M12 22V14" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+    <path d="M12 14C12 14 8 12 8 8C8 4 12 2 12 2C12 2 16 4 16 8C16 12 12 14 12 14Z" stroke="currentColor" strokeWidth="1.5" />
+    <path d="M8 22H16" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+    <path d="M10 18L12 14L14 18" stroke="currentColor" strokeWidth="1" strokeDasharray="2 1" />
+  </IconWrapper>
+);
+
+/** Ignition - rocket launching */
+export const IconIgnition = ({ size = 20, className = '', color }) => (
+  <IconWrapper size={size} className={className} color={color}>
+    <path d="M12 2C12 2 7 7 7 12C7 14.5 8.5 17 12 17C15.5 17 17 14.5 17 12C17 7 12 2 12 2Z" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round" />
+    <path d="M9 17L7 22M15 17L17 22M12 17V20" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+    <circle cx="12" cy="10" r="2" stroke="currentColor" strokeWidth="1.5" />
+  </IconWrapper>
+);
+
+/** Expansion - expanding circles */
+export const IconExpansion = ({ size = 20, className = '', color }) => (
+  <IconWrapper size={size} className={className} color={color}>
+    <circle cx="12" cy="12" r="3" stroke="currentColor" strokeWidth="1.5" />
+    <circle cx="12" cy="12" r="6" stroke="currentColor" strokeWidth="1.5" strokeDasharray="3 3" />
+    <circle cx="12" cy="12" r="9" stroke="currentColor" strokeWidth="1.5" strokeDasharray="5 5" />
+    <path d="M12 3V1M12 23V21M21 12H23M1 12H3" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+  </IconWrapper>
+);
+
+/** Target/Crosshair */
+export const IconTarget = ({ size = 20, className = '', color }) => (
+  <IconWrapper size={size} className={className} color={color}>
+    <circle cx="12" cy="12" r="9" stroke="currentColor" strokeWidth="1.5" />
+    <circle cx="12" cy="12" r="5" stroke="currentColor" strokeWidth="1.5" />
+    <circle cx="12" cy="12" r="1" fill="currentColor" />
+    <path d="M12 2V6M12 18V22M2 12H6M18 12H22" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+  </IconWrapper>
+);
+
+/** Fire/Hot trend */
+export const IconFire = ({ size = 20, className = '', color }) => (
+  <IconWrapper size={size} className={className} color={color}>
+    <path d="M12 22C16.4183 22 20 18.4183 20 14C20 11.5 18.5 9 16.5 7.5C16.5 9 15.5 10.5 14 11C14 8 12 5 9 3C9 6 7 8 5.5 10C4.5 11.5 4 13.5 4 14C4 18.4183 7.58172 22 12 22Z" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round" />
+    <path d="M12 22C13.6569 22 15 19.5 15 17C15 15 14 14 12 13C10 14 9 15 9 17C9 19.5 10.3431 22 12 22Z" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round" />
+  </IconWrapper>
+);
+
+/** Decay/Down trend */
+export const IconDecay = ({ size = 20, className = '', color }) => (
+  <IconWrapper size={size} className={className} color={color}>
+    <path d="M21 7L13 15L9 11L3 17" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+    <path d="M21 7V13M21 7H15" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+    <path d="M3 20H21" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+  </IconWrapper>
+);
+
+/** Warning - triangle alert */
+export const IconWarning = ({ size = 20, className = '', color }) => (
+  <IconWrapper size={size} className={className} color={color}>
+    <path d="M12 3L2 20H22L12 3Z" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round" />
+    <path d="M12 9V13" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+    <circle cx="12" cy="16" r="1" fill="currentColor" />
+  </IconWrapper>
+);
+
 // Export all icons as a map for easy lookup
 export const FomoIcons = {
   // Backer types

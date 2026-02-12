@@ -405,7 +405,10 @@ export default function ConnectionsPage() {
 
     if (search) {
       const s = search.toLowerCase();
-      result = result.filter((acc) => acc.handle?.toLowerCase().includes(s));
+      result = result.filter((acc) => {
+        const handle = acc.handle || acc.username || acc.author_id || '';
+        return handle.toLowerCase().includes(s);
+      });
     }
 
     result = result.filter((acc) => {

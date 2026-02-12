@@ -69,10 +69,12 @@ const SectionCard = ({ title, icon: Icon, children, action }) => (
 );
 
 // Pattern Toggle
-const PatternToggle = ({ name, label, enabled, onToggle, description, threshold }) => (
+const PatternToggle = ({ name, label, enabled, onToggle, description, threshold }) => {
+  const PatternIcon = PATTERN_ICONS[name];
+  return (
   <div className="flex items-center justify-between p-4 bg-gray-50 rounded-xl">
     <div className="flex items-center gap-3">
-      <span className="text-2xl">{PATTERN_ICONS[name] || '🔍'}</span>
+      {PatternIcon ? <PatternIcon size={24} className="text-gray-600" /> : <span className="w-6 h-6" />}
       <div>
         <div className="font-medium text-gray-900">{label}</div>
         <div className="text-xs text-gray-500">{description}</div>

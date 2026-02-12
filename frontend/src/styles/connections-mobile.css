@@ -1,0 +1,414 @@
+/* ============================================
+   CONNECTIONS MODULE - MOBILE RESPONSIVE
+   Адаптив для мобильных и планшетов
+   ============================================ */
+
+/* ============================================
+   1. MOBILE FIRST - BASE (< 640px)
+   ============================================ */
+
+/* Header */
+@media (max-width: 639px) {
+  /* Page header - compact */
+  .connections-page .page-header {
+    padding: 12px 16px;
+  }
+  
+  .connections-page .page-header h1 {
+    font-size: 1.25rem;
+  }
+  
+  .connections-page .page-header p {
+    font-size: 0.75rem;
+    display: none; /* Hide description on mobile */
+  }
+  
+  /* Compare button - icon only on mobile */
+  .connections-page .compare-btn span {
+    display: none;
+  }
+  
+  .connections-page .compare-btn {
+    padding: 8px;
+  }
+}
+
+/* ============================================
+   2. NAVIGATION TABS - Horizontal Scroll
+   ============================================ */
+
+@media (max-width: 767px) {
+  .connections-tabs {
+    display: flex;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    gap: 8px;
+    padding-bottom: 8px;
+    margin: 0 -16px;
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+  
+  .connections-tabs::-webkit-scrollbar {
+    display: none;
+  }
+  
+  .connections-tabs > * {
+    flex-shrink: 0;
+    white-space: nowrap;
+  }
+  
+  .connections-tabs a,
+  .connections-tabs span {
+    padding: 8px 12px;
+    font-size: 0.8125rem;
+  }
+  
+  .connections-tabs svg {
+    width: 14px;
+    height: 14px;
+  }
+}
+
+/* ============================================
+   3. STATS CARDS - 2x2 Grid on Mobile
+   ============================================ */
+
+@media (max-width: 639px) {
+  .connections-stats {
+    display: grid !important;
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 8px !important;
+  }
+  
+  .connections-stats > div {
+    padding: 12px !important;
+  }
+  
+  .connections-stats .stat-value {
+    font-size: 1.25rem !important;
+  }
+  
+  .connections-stats .stat-label {
+    font-size: 0.6875rem !important;
+  }
+}
+
+@media (min-width: 640px) and (max-width: 767px) {
+  .connections-stats {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+  }
+}
+
+/* ============================================
+   4. SEARCH & FILTERS - Stack on Mobile
+   ============================================ */
+
+@media (max-width: 639px) {
+  .connections-search-bar {
+    flex-direction: column !important;
+    gap: 12px !important;
+  }
+  
+  .connections-search-bar > div:first-child {
+    max-width: 100% !important;
+    width: 100% !important;
+  }
+  
+  .connections-search-bar input {
+    width: 100% !important;
+  }
+  
+  /* Filter button full width */
+  .connections-search-bar .filter-btn {
+    width: 100%;
+    justify-content: center;
+  }
+  
+  /* Filter panel - full screen modal on mobile */
+  .connections-filter-panel {
+    position: fixed !important;
+    inset: 0 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    border-radius: 0 !important;
+    z-index: 100 !important;
+    overflow-y: auto;
+  }
+}
+
+/* ============================================
+   5. TABLE - Card View on Mobile
+   ============================================ */
+
+@media (max-width: 767px) {
+  /* Hide table, show cards */
+  .connections-table {
+    display: none !important;
+  }
+  
+  .connections-cards {
+    display: flex !important;
+    flex-direction: column;
+    gap: 12px;
+  }
+  
+  .connection-card {
+    background: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    padding: 16px;
+  }
+  
+  .connection-card-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 12px;
+  }
+  
+  .connection-card-avatar {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+  
+  .connection-card-info {
+    flex: 1;
+    min-width: 0;
+  }
+  
+  .connection-card-handle {
+    font-weight: 600;
+    font-size: 0.9375rem;
+    color: #111827;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  
+  .connection-card-stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px solid #f3f4f6;
+  }
+  
+  .connection-card-stat {
+    text-align: center;
+  }
+  
+  .connection-card-stat-value {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #111827;
+  }
+  
+  .connection-card-stat-label {
+    font-size: 0.6875rem;
+    color: #6b7280;
+    margin-top: 2px;
+  }
+}
+
+/* Tablet - Horizontal scroll table */
+@media (min-width: 768px) and (max-width: 1023px) {
+  .connections-table-wrapper {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    margin: 0 -16px;
+    padding: 0 16px;
+  }
+  
+  .connections-table {
+    min-width: 800px;
+  }
+  
+  .connections-table th,
+  .connections-table td {
+    padding: 12px 16px;
+    font-size: 0.875rem;
+  }
+  
+  .connections-cards {
+    display: none !important;
+  }
+}
+
+/* Desktop */
+@media (min-width: 1024px) {
+  .connections-cards {
+    display: none !important;
+  }
+}
+
+/* ============================================
+   6. COMPARE MODAL - Full Screen Mobile
+   ============================================ */
+
+@media (max-width: 639px) {
+  .compare-modal {
+    max-width: 100% !important;
+    width: 100% !important;
+    margin: 0 !important;
+    border-radius: 0 !important;
+    min-height: 100vh;
+  }
+  
+  .compare-modal-grid {
+    grid-template-columns: 1fr !important;
+    gap: 12px;
+  }
+  
+  .compare-modal select {
+    font-size: 16px; /* Prevent iOS zoom */
+  }
+  
+  .compare-results-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+  
+  .compare-table {
+    font-size: 0.8125rem;
+  }
+  
+  .compare-table th,
+  .compare-table td {
+    padding: 8px 12px;
+  }
+}
+
+/* ============================================
+   7. CONTAINER & SPACING
+   ============================================ */
+
+@media (max-width: 639px) {
+  .connections-container {
+    padding-left: 16px !important;
+    padding-right: 16px !important;
+    padding-top: 16px !important;
+    padding-bottom: 16px !important;
+  }
+  
+  .connections-section {
+    margin-bottom: 16px !important;
+  }
+}
+
+@media (min-width: 640px) and (max-width: 767px) {
+  .connections-container {
+    padding-left: 24px !important;
+    padding-right: 24px !important;
+  }
+}
+
+/* ============================================
+   8. TOUCH OPTIMIZATIONS
+   ============================================ */
+
+@media (max-width: 1023px) {
+  /* Larger touch targets */
+  .connections-tabs a,
+  .connections-tabs span,
+  .connections-table tr,
+  .connection-card,
+  button {
+    min-height: 44px;
+  }
+  
+  /* Remove hover effects on touch */
+  @media (hover: none) {
+    .card-hover:hover,
+    .table-row-hover:hover {
+      transform: none;
+      box-shadow: none;
+      background: inherit;
+    }
+  }
+}
+
+/* ============================================
+   9. RISK BADGE - Compact on Mobile
+   ============================================ */
+
+@media (max-width: 639px) {
+  .risk-badge {
+    padding: 4px 8px;
+    font-size: 0.6875rem;
+  }
+}
+
+/* ============================================
+   10. SCORE DISPLAY - Compact on Mobile
+   ============================================ */
+
+@media (max-width: 639px) {
+  .score-display {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+  }
+  
+  .score-display .progress-bar {
+    width: 100%;
+  }
+  
+  .score-display .score-value {
+    font-size: 0.875rem;
+  }
+}
+
+/* ============================================
+   11. SAFE AREAS (iPhone notch, etc)
+   ============================================ */
+
+@supports (padding: max(0px)) {
+  .connections-page {
+    padding-left: max(16px, env(safe-area-inset-left));
+    padding-right: max(16px, env(safe-area-inset-right));
+    padding-bottom: max(16px, env(safe-area-inset-bottom));
+  }
+}
+
+/* ============================================
+   12. LANDSCAPE MOBILE
+   ============================================ */
+
+@media (max-width: 896px) and (orientation: landscape) {
+  .connections-stats {
+    grid-template-columns: repeat(4, 1fr) !important;
+  }
+  
+  .connections-cards {
+    display: grid !important;
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* ============================================
+   13. PRINT STYLES
+   ============================================ */
+
+@media print {
+  .connections-tabs,
+  .connections-search-bar,
+  .filter-btn,
+  .compare-btn {
+    display: none !important;
+  }
+  
+  .connections-table {
+    display: table !important;
+    font-size: 10pt;
+  }
+  
+  .connections-cards {
+    display: none !important;
+  }
+}

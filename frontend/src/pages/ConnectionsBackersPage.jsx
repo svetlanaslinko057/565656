@@ -32,6 +32,7 @@ import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 import { Card, CardContent } from '../components/ui/card';
 import { Badge } from '../components/ui/badge';
+import { IconVCFund, IconInfluencer, IconNFT, IconMedia } from '../components/icons/FomoIcons';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || '';
 
@@ -40,10 +41,10 @@ const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || '';
 // ============================================================
 
 const BACKER_TYPES = [
-  { value: 'FUND', label: 'VC Funds', icon: '💰', color: 'green', tooltip: 'Venture Capital funds investing in crypto projects' },
-  { value: 'INFLUENCER', label: 'Influencers', icon: '🎤', color: 'blue', tooltip: 'Key opinion leaders with significant reach' },
-  { value: 'NFT_PROJECT', label: 'NFT Projects', icon: '🎨', color: 'purple', tooltip: 'NFT collections and marketplaces with community influence' },
-  { value: 'MEDIA', label: 'Media Partners', icon: '📰', color: 'yellow', tooltip: 'News outlets, podcasts, and content creators' },
+  { value: 'FUND', label: 'VC Funds', Icon: IconVCFund, color: 'green', tooltip: 'Venture Capital funds investing in crypto projects' },
+  { value: 'INFLUENCER', label: 'Influencers', Icon: IconInfluencer, color: 'blue', tooltip: 'Key opinion leaders with significant reach' },
+  { value: 'NFT_PROJECT', label: 'NFT Projects', Icon: IconNFT, color: 'purple', tooltip: 'NFT collections and marketplaces with community influence' },
+  { value: 'MEDIA', label: 'Media Partners', Icon: IconMedia, color: 'yellow', tooltip: 'News outlets, podcasts, and content creators' },
 ];
 
 const CATEGORY_COLORS = {

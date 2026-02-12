@@ -54,36 +54,36 @@ const ScoreDisplay = ({ value, max = 1000 }) => {
 const ConnectionCard = ({ acc }) => (
   <Link
     to={`/connections/${acc.author_id}`}
-    className="connection-card block"
+    className="connection-card block bg-white border border-gray-200 rounded-xl p-4"
     data-testid={`connection-card-${acc.author_id}`}
   >
-    <div className="connection-card-header">
-      <div className="w-12 h-12 bg-gradient-to-br from-blue-400 to-blue-600 rounded-full flex items-center justify-center text-white font-semibold connection-card-avatar">
+    <div className="flex items-center gap-3 mb-3">
+      <div className="w-12 h-12 bg-gradient-to-br from-blue-400 to-blue-600 rounded-full flex items-center justify-center text-white font-semibold shrink-0">
         {acc.handle?.charAt(0).toUpperCase() || '?'}
       </div>
-      <div className="connection-card-info">
-        <div className="connection-card-handle">@{acc.handle}</div>
+      <div className="flex-1 min-w-0">
+        <div className="font-semibold text-gray-900 truncate">@{acc.handle}</div>
         <RiskBadge level={acc.scores?.risk_level} />
       </div>
-      <div className="text-right">
+      <div className="text-right shrink-0">
         <div className="text-lg font-bold text-gray-900">{acc.scores?.influence_score || 0}</div>
         <div className="text-xs text-gray-500">Score</div>
       </div>
     </div>
-    <div className="connection-card-stats">
-      <div className="connection-card-stat">
-        <div className="connection-card-stat-value">{formatNumber(acc.followers)}</div>
-        <div className="connection-card-stat-label">Followers</div>
+    <div className="grid grid-cols-3 gap-2 pt-3 border-t border-gray-100">
+      <div className="text-center">
+        <div className="text-sm font-semibold text-gray-900">{formatNumber(acc.followers)}</div>
+        <div className="text-xs text-gray-500">Followers</div>
       </div>
-      <div className="connection-card-stat">
-        <div className="connection-card-stat-value">{acc.activity?.posts_count || 0}</div>
-        <div className="connection-card-stat-label">Posts</div>
+      <div className="text-center">
+        <div className="text-sm font-semibold text-gray-900">{acc.activity?.posts_count || 0}</div>
+        <div className="text-xs text-gray-500">Posts</div>
       </div>
-      <div className="connection-card-stat">
-        <div className="connection-card-stat-value">
+      <div className="text-center">
+        <div className="text-sm font-semibold text-gray-900">
           {((acc.activity?.avg_engagement_quality || 0) * 100).toFixed(1)}%
         </div>
-        <div className="connection-card-stat-label">Engagement</div>
+        <div className="text-xs text-gray-500">Engage</div>
       </div>
     </div>
   </Link>

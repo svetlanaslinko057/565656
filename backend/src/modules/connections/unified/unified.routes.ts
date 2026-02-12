@@ -20,7 +20,7 @@ export async function registerUnifiedRoutes(app: FastifyInstance) {
       limit?: string;
     };
     
-    // If preset is provided, use taxonomy
+    // If preset is provided, try taxonomy first
     if (preset && PRESET_TO_GROUP[preset]) {
       const group = PRESET_TO_GROUP[preset];
       const members = await getAccountsByGroup(group, { 
@@ -28,41 +28,47 @@ export async function registerUnifiedRoutes(app: FastifyInstance) {
         minWeight: 0.2 
       });
       
-      // Enrich with unified account data
-      const accountIds = members.map(m => m.accountId);
-      const accounts = await db.collection('connections_unified_accounts')
-        .find({ id: { $in: accountIds } })
-        .toArray();
-      
-      const accountMap = new Map(accounts.map(a => [a.id, a]));
-      
-      let items = members.map(m => ({
-        ...accountMap.get(m.accountId),
-        accountId: m.accountId,
-        score: m.weight,
-        groups: [{ group: m.group, weight: m.weight }],
-      }));
-      
-      // Filter by search query
-      if (q) {
-        const query = q.toLowerCase();
-        items = items.filter(item => 
-          (item.accountId || '').toLowerCase().includes(query) ||
-          (item.username || '').toLowerCase().includes(query) ||
-          (item.name || '').toLowerCase().includes(query)
-        );
+      // If taxonomy has members, use them
+      if (members.length > 0) {
+        // Enrich with unified account data
+        const accountIds = members.map(m => m.accountId);
+        const accounts = await db.collection('connections_unified_accounts')
+          .find({ $or: [{ id: { $in: accountIds } }, { handle: { $in: accountIds } }] })
+          .toArray();
+        
+        const accountMap = new Map(accounts.map(a => [a.id || a.handle, a]));
+        
+        let items = members.map(m => ({
+          ...accountMap.get(m.accountId),
+          accountId: m.accountId,
+          score: m.weight,
+          groups: [{ group: m.group, weight: m.weight }],
+        }));
+        
+        // Filter by search query
+        if (q) {
+          const query = q.toLowerCase();
+          items = items.filter(item => 
+            (item.accountId || '').toLowerCase().includes(query) ||
+            (item.username || '').toLowerCase().includes(query) ||
+            (item.name || '').toLowerCase().includes(query) ||
+            (item.handle || '').toLowerCase().includes(query)
+          );
+        }
+        
+        return {
+          ok: true,
+          preset,
+          group,
+          count: items.length,
+          data: items,
+        };
       }
       
-      return {
-        ok: true,
-        preset,
-        group,
-        count: items.length,
-        data: items,
-      };
+      // Taxonomy empty - fall through to facet query with preset as facet
     }
     
-    // Fallback to facet-based query
+    // Fallback to facet-based query (also used when taxonomy is empty)
     const selectedFacet = String(facet || 'SMART');
     const limitNum = parseInt(limit);
     const data = await getUnifiedAccounts(db, selectedFacet, limitNum);

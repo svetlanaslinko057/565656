@@ -94,7 +94,8 @@ const PatternToggle = ({ name, label, enabled, onToggle, description, threshold 
       {enabled ? 'ON' : 'OFF'}
     </button>
   </div>
-);
+  );
+};
 
 export default function PatternsTab({ token }) {
   const [config, setConfig] = useState(null);

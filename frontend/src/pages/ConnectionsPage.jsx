@@ -1,6 +1,6 @@
 /**
  * ConnectionsPage - Main page with accounts table
- * Based on provided design mockups
+ * Mobile-first responsive design
  */
 import { useState, useEffect, useMemo } from 'react';
 import { Link } from 'react-router-dom';
@@ -13,6 +13,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from '../components/ui/dialog';
+import '../styles/connections-mobile.css';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || '';
 
@@ -25,7 +26,7 @@ const RiskBadge = ({ level }) => {
     unknown: 'bg-gray-100 text-gray-500',
   };
   return (
-    <span className={`px-2 py-1 rounded-full text-xs font-medium ${styles[level] || styles.unknown}`}>
+    <span className={`px-2 py-1 rounded-full text-xs font-medium risk-badge ${styles[level] || styles.unknown}`}>
       {level?.charAt(0).toUpperCase() + level?.slice(1) || 'Unknown'}
     </span>
   );
@@ -40,13 +41,60 @@ const ScoreDisplay = ({ value, max = 1000 }) => {
   else if (percent > 0) color = 'bg-red-500';
   
   return (
-    <div className="flex items-center gap-2">
-      <div className="w-16 h-2 bg-gray-200 rounded-full overflow-hidden">
+    <div className="flex items-center gap-2 score-display">
+      <div className="w-16 h-2 bg-gray-200 rounded-full overflow-hidden progress-bar">
         <div className={`h-full ${color} rounded-full`} style={{ width: `${percent}%` }} />
       </div>
-      <span className="text-sm font-medium text-gray-700">{Math.round(value)}</span>
+      <span className="text-sm font-medium text-gray-700 score-value">{Math.round(value)}</span>
     </div>
   );
+};
+
+// Mobile Card Component
+const ConnectionCard = ({ acc }) => (
+  <Link
+    to={`/connections/${acc.author_id}`}
+    className="connection-card block"
+    data-testid={`connection-card-${acc.author_id}`}
+  >
+    <div className="connection-card-header">
+      <div className="w-12 h-12 bg-gradient-to-br from-blue-400 to-blue-600 rounded-full flex items-center justify-center text-white font-semibold connection-card-avatar">
+        {acc.handle?.charAt(0).toUpperCase() || '?'}
+      </div>
+      <div className="connection-card-info">
+        <div className="connection-card-handle">@{acc.handle}</div>
+        <RiskBadge level={acc.scores?.risk_level} />
+      </div>
+      <div className="text-right">
+        <div className="text-lg font-bold text-gray-900">{acc.scores?.influence_score || 0}</div>
+        <div className="text-xs text-gray-500">Score</div>
+      </div>
+    </div>
+    <div className="connection-card-stats">
+      <div className="connection-card-stat">
+        <div className="connection-card-stat-value">{formatNumber(acc.followers)}</div>
+        <div className="connection-card-stat-label">Followers</div>
+      </div>
+      <div className="connection-card-stat">
+        <div className="connection-card-stat-value">{acc.activity?.posts_count || 0}</div>
+        <div className="connection-card-stat-label">Posts</div>
+      </div>
+      <div className="connection-card-stat">
+        <div className="connection-card-stat-value">
+          {((acc.activity?.avg_engagement_quality || 0) * 100).toFixed(1)}%
+        </div>
+        <div className="connection-card-stat-label">Engagement</div>
+      </div>
+    </div>
+  </Link>
+);
+
+// Format number helper
+const formatNumber = (num) => {
+  if (!num) return '0';
+  if (num >= 1000000) return (num / 1000000).toFixed(1) + 'M';
+  if (num >= 1000) return (num / 1000).toFixed(1) + 'K';
+  return num.toString();
 };
 
 // Filter Panel Component
@@ -71,10 +119,10 @@ const FilterPanel = ({ filters, setFilters, onClose }) => {
   };
 
   return (
-    <div className="absolute right-0 top-12 w-80 bg-white rounded-xl shadow-xl border border-gray-200 p-5 z-50">
+    <div className="absolute right-0 top-12 w-80 max-w-[calc(100vw-32px)] bg-white rounded-xl shadow-xl border border-gray-200 p-5 z-50 connections-filter-panel">
       <div className="flex items-center justify-between mb-4">
         <h3 className="font-semibold text-gray-900">Filters</h3>
-        <button onClick={onClose} className="text-gray-400 hover:text-gray-600">
+        <button onClick={onClose} className="text-gray-400 hover:text-gray-600 p-2">
           <X className="w-5 h-5" />
         </button>
       </div>
@@ -114,7 +162,7 @@ const FilterPanel = ({ filters, setFilters, onClose }) => {
       {/* Risk Level */}
       <div className="mb-5">
         <label className="block text-sm font-medium text-gray-700 mb-2">Risk Level</label>
-        <div className="flex gap-2">
+        <div className="flex gap-2 flex-wrap">
           {['low', 'medium', 'high'].map((level) => (
             <button
               key={level}
@@ -127,7 +175,7 @@ const FilterPanel = ({ filters, setFilters, onClose }) => {
                     : [...current, level],
                 });
               }}
-              className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
+              className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors min-h-[44px] ${
                 (localFilters.riskLevel || []).includes(level)
                   ? 'bg-blue-600 text-white'
                   : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
@@ -142,12 +190,12 @@ const FilterPanel = ({ filters, setFilters, onClose }) => {
       {/* Time Window */}
       <div className="mb-5">
         <label className="block text-sm font-medium text-gray-700 mb-2">Time Window</label>
-        <div className="flex gap-2">
+        <div className="flex gap-2 flex-wrap">
           {[7, 14, 30, 90].map((days) => (
             <button
               key={days}
               onClick={() => setLocalFilters({ ...localFilters, timeWindow: days })}
-              className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
+              className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors min-h-[44px] ${
                 localFilters.timeWindow === days
                   ? 'bg-blue-600 text-white'
                   : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
@@ -161,11 +209,11 @@ const FilterPanel = ({ filters, setFilters, onClose }) => {
 
       {/* Actions */}
       <div className="flex gap-3 pt-3 border-t border-gray-100">
-        <Button variant="outline" onClick={handleReset} className="flex-1">
+        <Button variant="outline" onClick={handleReset} className="flex-1 min-h-[44px]">
           Reset
         </Button>
-        <Button onClick={handleApply} className="flex-1 bg-blue-600 hover:bg-blue-700 text-white">
-          Apply Filters
+        <Button onClick={handleApply} className="flex-1 bg-blue-600 hover:bg-blue-700 text-white min-h-[44px]">
+          Apply
         </Button>
       </div>
     </div>
@@ -209,13 +257,13 @@ const CompareModal = ({ isOpen, onClose, accounts, selectedAccounts, setSelected
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-3xl bg-white">
+      <DialogContent className="max-w-3xl w-full max-h-[90vh] overflow-y-auto bg-white compare-modal">
         <DialogHeader>
           <DialogTitle className="text-xl font-semibold text-gray-900">Compare Accounts</DialogTitle>
         </DialogHeader>
 
         {/* Account Selection */}
-        <div className="grid grid-cols-2 gap-4 mb-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6 compare-modal-grid">
           {[0, 1].map((idx) => (
             <div key={idx} className="space-y-2">
               <label className="text-sm font-medium text-gray-600">Account {idx + 1}</label>
@@ -226,7 +274,7 @@ const CompareModal = ({ isOpen, onClose, accounts, selectedAccounts, setSelected
                   newSelected[idx] = e.target.value;
                   setSelectedAccounts(newSelected);
                 }}
-                className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-3 border border-gray-200 rounded-lg text-base focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
                 <option value="">Select account...</option>
                 {accounts.map((acc) => (
@@ -247,49 +295,39 @@ const CompareModal = ({ isOpen, onClose, accounts, selectedAccounts, setSelected
         {compareResult && (
           <div className="space-y-6">
             {/* Audience Overlap */}
-            <div className="bg-gray-50 rounded-xl p-5">
+            <div className="bg-gray-50 rounded-xl p-4 sm:p-5">
               <h4 className="text-sm font-semibold text-gray-900 mb-4">Audience Overlap</h4>
-              <div className="grid grid-cols-4 gap-4 text-center">
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 text-center compare-results-grid">
                 <div>
-                  <div className="text-2xl font-bold text-blue-600">
+                  <div className="text-xl sm:text-2xl font-bold text-blue-600">
                     {(compareResult.audience_overlap.a_to_b * 100).toFixed(1)}%
                   </div>
                   <div className="text-xs text-gray-500 mt-1">A → B</div>
                 </div>
                 <div>
-                  <div className="text-2xl font-bold text-purple-600">
+                  <div className="text-xl sm:text-2xl font-bold text-purple-600">
                     {(compareResult.audience_overlap.b_to_a * 100).toFixed(1)}%
                   </div>
                   <div className="text-xs text-gray-500 mt-1">B → A</div>
                 </div>
                 <div>
-                  <div className="text-2xl font-bold text-gray-700">
+                  <div className="text-xl sm:text-2xl font-bold text-gray-700">
                     {compareResult.audience_overlap.shared_users.toLocaleString()}
                   </div>
                   <div className="text-xs text-gray-500 mt-1">Shared</div>
                 </div>
                 <div>
-                  <div className="text-2xl font-bold text-green-600">
+                  <div className="text-xl sm:text-2xl font-bold text-green-600">
                     {(compareResult.audience_overlap.jaccard_similarity * 100).toFixed(1)}%
                   </div>
                   <div className="text-xs text-gray-500 mt-1">Jaccard</div>
                 </div>
               </div>
-              {compareResult.interpretation && (
-                <div className="mt-4 p-3 bg-white rounded-lg border border-gray-200">
-                  <div className="text-sm font-medium text-gray-700">
-                    {compareResult.interpretation.relationship.replace(/_/g, ' ')}
-                  </div>
-                  <div className="text-xs text-gray-500 mt-1">
-                    {compareResult.interpretation.description}
-                  </div>
-                </div>
-              )}
             </div>
 
             {/* Comparison Table */}
-            <div className="overflow-hidden rounded-xl border border-gray-200">
-              <table className="w-full text-sm">
+            <div className="overflow-x-auto rounded-xl border border-gray-200">
+              <table className="w-full text-sm compare-table">
                 <thead className="bg-gray-50">
                   <tr>
                     <th className="px-4 py-3 text-left text-gray-600 font-medium">Metric</th>
@@ -362,24 +400,20 @@ export default function ConnectionsPage() {
   const filteredAccounts = useMemo(() => {
     let result = [...accounts];
 
-    // Search filter
     if (search) {
       const s = search.toLowerCase();
       result = result.filter((acc) => acc.handle?.toLowerCase().includes(s));
     }
 
-    // Influence filter
     result = result.filter((acc) => {
       const score = acc.scores?.influence_score || 0;
       return score >= filters.influenceMin && score <= filters.influenceMax;
     });
 
-    // Risk level filter
     if (filters.riskLevel.length > 0) {
       result = result.filter((acc) => filters.riskLevel.includes(acc.scores?.risk_level));
     }
 
-    // Sort
     result.sort((a, b) => {
       const aVal = sortConfig.key.split('.').reduce((o, k) => o?.[k], a) || 0;
       const bVal = sortConfig.key.split('.').reduce((o, k) => o?.[k], b) || 0;
@@ -397,94 +431,86 @@ export default function ConnectionsPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 connections-page">
       {/* Header */}
-      <div className="bg-white border-b border-gray-200">
-        <div className="max-w-7xl mx-auto px-6 py-6">
-          <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-2xl font-bold text-gray-900">Connections</h1>
-              <p className="text-sm text-gray-500 mt-1">
+      <div className="bg-white border-b border-gray-200 page-header">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4 sm:py-6">
+          <div className="flex items-center justify-between gap-4">
+            <div className="min-w-0">
+              <h1 className="text-xl sm:text-2xl font-bold text-gray-900 truncate">Connections</h1>
+              <p className="text-sm text-gray-500 mt-1 hidden sm:block">
                 Analyze Twitter account influence and engagement metrics
               </p>
             </div>
-            <div className="flex items-center gap-3">
-              <Button
-                variant="outline"
-                onClick={() => setShowCompare(true)}
-                className="flex items-center gap-2"
-              >
-                <Users className="w-4 h-4" />
-                Compare
-              </Button>
-            </div>
+            <Button
+              variant="outline"
+              onClick={() => setShowCompare(true)}
+              className="flex items-center gap-2 shrink-0 compare-btn"
+              data-testid="compare-button"
+            >
+              <Users className="w-4 h-4" />
+              <span className="hidden sm:inline">Compare</span>
+            </Button>
           </div>
         </div>
       </div>
 
       {/* Main Content */}
-      <div className="max-w-7xl mx-auto px-6 py-6">
-        {/* Sub-navigation tabs */}
-        <div className="flex items-center gap-2 mb-6">
-          <span className="px-4 py-2 rounded-lg text-sm font-medium bg-gray-900 text-white">
-            <span className="flex items-center gap-2">
-              <Users className="w-4 h-4" />
-              Influencers
-            </span>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4 sm:py-6 connections-container">
+        {/* Sub-navigation tabs - horizontal scroll on mobile */}
+        <div className="flex items-center gap-2 mb-4 sm:mb-6 overflow-x-auto pb-2 -mx-4 px-4 sm:mx-0 sm:px-0 connections-tabs" data-testid="connections-tabs">
+          <span className="px-3 sm:px-4 py-2 rounded-lg text-sm font-medium bg-gray-900 text-white flex items-center gap-2 shrink-0">
+            <Users className="w-4 h-4" />
+            <span>Influencers</span>
           </span>
           <Link
             to="/connections/graph"
-            className="px-4 py-2 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100 transition-colors"
+            className="px-3 sm:px-4 py-2 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100 transition-colors flex items-center gap-2 shrink-0"
           >
-            <span className="flex items-center gap-2">
-              <Network className="w-4 h-4" />
-              Graph
-            </span>
+            <Network className="w-4 h-4" />
+            <span>Graph</span>
           </Link>
           <Link
             to="/connections/radar"
-            className="px-4 py-2 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100 transition-colors"
+            className="px-3 sm:px-4 py-2 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100 transition-colors flex items-center gap-2 shrink-0"
           >
-            <span className="flex items-center gap-2">
-              <Radio className="w-4 h-4" />
-              Radar
-            </span>
+            <Radio className="w-4 h-4" />
+            <span>Radar</span>
           </Link>
           <Link
             to="/connections/backers"
-            className="px-4 py-2 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100 transition-colors"
+            className="px-3 sm:px-4 py-2 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100 transition-colors flex items-center gap-2 shrink-0"
           >
-            <span className="flex items-center gap-2">
-              <Building2 className="w-4 h-4" />
-              Backers
-            </span>
+            <Building2 className="w-4 h-4" />
+            <span>Backers</span>
           </Link>
           <Link
             to="/connections/reality"
-            className="px-4 py-2 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100 transition-colors"
+            className="px-3 sm:px-4 py-2 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100 transition-colors flex items-center gap-2 shrink-0"
           >
-            <span className="flex items-center gap-2">
-              <Trophy className="w-4 h-4" />
-              Leaderboard
-            </span>
+            <Trophy className="w-4 h-4" />
+            <span>Leaderboard</span>
           </Link>
         </div>
         
         {/* Search and Filters */}
-        <div className="flex items-center gap-4 mb-6">
-          <div className="relative flex-1 max-w-md">
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-4 mb-4 sm:mb-6 connections-search-bar">
+          <div className="relative flex-1 sm:max-w-md">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
             <Input
               placeholder="Search accounts..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="px-4 bg-white border-gray-200"
+              className="pl-10 bg-white border-gray-200 w-full"
+              data-testid="search-input"
             />
           </div>
           <div className="relative">
             <Button
               variant="outline"
               onClick={() => setShowFilters(!showFilters)}
-              className="flex items-center gap-2"
+              className="flex items-center gap-2 w-full sm:w-auto justify-center filter-btn"
+              data-testid="filter-button"
             >
               <Filter className="w-4 h-4" />
               Filters
@@ -502,129 +528,146 @@ export default function ConnectionsPage() {
           </div>
         </div>
 
-        {/* Stats Summary */}
-        <div className="grid grid-cols-4 gap-4 mb-6">
-          <div className="bg-white rounded-xl p-4 border border-gray-200">
-            <div className="text-2xl font-bold text-gray-900">{accounts.length}</div>
-            <div className="text-sm text-gray-500">Total Accounts</div>
+        {/* Stats Summary - 2x2 on mobile, 4 cols on desktop */}
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 mb-4 sm:mb-6 connections-stats">
+          <div className="bg-white rounded-xl p-3 sm:p-4 border border-gray-200">
+            <div className="text-xl sm:text-2xl font-bold text-gray-900 stat-value">{accounts.length}</div>
+            <div className="text-xs sm:text-sm text-gray-500 stat-label">Total Accounts</div>
           </div>
-          <div className="bg-white rounded-xl p-4 border border-gray-200">
-            <div className="text-2xl font-bold text-green-600">
+          <div className="bg-white rounded-xl p-3 sm:p-4 border border-gray-200">
+            <div className="text-xl sm:text-2xl font-bold text-green-600 stat-value">
               {accounts.filter((a) => a.scores?.risk_level === 'low').length}
             </div>
-            <div className="text-sm text-gray-500">Low Risk</div>
+            <div className="text-xs sm:text-sm text-gray-500 stat-label">Low Risk</div>
           </div>
-          <div className="bg-white rounded-xl p-4 border border-gray-200">
-            <div className="text-2xl font-bold text-yellow-600">
+          <div className="bg-white rounded-xl p-3 sm:p-4 border border-gray-200">
+            <div className="text-xl sm:text-2xl font-bold text-yellow-600 stat-value">
               {accounts.filter((a) => a.scores?.risk_level === 'medium').length}
             </div>
-            <div className="text-sm text-gray-500">Medium Risk</div>
+            <div className="text-xs sm:text-sm text-gray-500 stat-label">Medium Risk</div>
           </div>
-          <div className="bg-white rounded-xl p-4 border border-gray-200">
-            <div className="text-2xl font-bold text-red-600">
+          <div className="bg-white rounded-xl p-3 sm:p-4 border border-gray-200">
+            <div className="text-xl sm:text-2xl font-bold text-red-600 stat-value">
               {accounts.filter((a) => a.scores?.risk_level === 'high').length}
             </div>
-            <div className="text-sm text-gray-500">High Risk</div>
+            <div className="text-xs sm:text-sm text-gray-500 stat-label">High Risk</div>
           </div>
         </div>
 
-        {/* Table */}
-        <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
+        {/* Mobile Cards View */}
+        <div className="block md:hidden connections-cards space-y-3">
           {loading ? (
-            <div className="p-12 text-center text-gray-500">Loading accounts...</div>
+            <div className="p-8 text-center text-gray-500">Loading accounts...</div>
           ) : filteredAccounts.length === 0 ? (
-            <div className="p-12 text-center text-gray-500">
+            <div className="p-8 text-center text-gray-500 bg-white rounded-xl border border-gray-200">
               No accounts found. Add test data via API.
             </div>
           ) : (
-            <table className="w-full" data-testid="connections-table">
-              <thead className="bg-gray-50 border-b border-gray-200">
-                <tr>
-                  <th className="px-6 py-4 text-left">
-                    <button
-                      onClick={() => handleSort('handle')}
-                      className="flex items-center gap-2 text-sm font-semibold text-gray-600 hover:text-gray-900"
-                    >
-                      Account
-                      <ArrowUpDown className="w-3 h-3" />
-                    </button>
-                  </th>
-                  <th className="px-6 py-4 text-left">
-                    <button
-                      onClick={() => handleSort('scores.influence_score')}
-                      className="flex items-center gap-2 text-sm font-semibold text-gray-600 hover:text-gray-900"
-                    >
-                      Influence Score
-                      <ArrowUpDown className="w-3 h-3" />
-                    </button>
-                  </th>
-                  <th className="px-6 py-4 text-left">
-                    <button
-                      onClick={() => handleSort('scores.risk_level')}
-                      className="flex items-center gap-2 text-sm font-semibold text-gray-600 hover:text-gray-900"
-                    >
-                      Risk
-                      <ArrowUpDown className="w-3 h-3" />
-                    </button>
-                  </th>
-                  <th className="px-6 py-4 text-left">
-                    <span className="text-sm font-semibold text-gray-600">Followers</span>
-                  </th>
-                  <th className="px-6 py-4 text-left">
-                    <span className="text-sm font-semibold text-gray-600">Engagement</span>
-                  </th>
-                  <th className="px-6 py-4 text-left">
-                    <span className="text-sm font-semibold text-gray-600">Posts</span>
-                  </th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-gray-100">
-                {filteredAccounts.map((acc) => (
-                  <tr
-                    key={acc.author_id}
-                    className="hover:bg-gray-50 transition-colors cursor-pointer"
-                  >
-                    <td className="px-6 py-4">
-                      <Link
-                        to={`/connections/${acc.author_id}`}
-                        className="flex items-center gap-3"
-                        data-testid={`account-link-${acc.author_id}`}
-                      >
-                        <div className="w-10 h-10 bg-gradient-to-br from-blue-400 to-blue-600 rounded-full flex items-center justify-center text-white font-semibold">
-                          {acc.handle?.charAt(0).toUpperCase() || '?'}
-                        </div>
-                        <div>
-                          <div className="font-medium text-gray-900">@{acc.handle}</div>
-                          <div className="text-xs text-gray-400">{acc.author_id}</div>
-                        </div>
-                      </Link>
-                    </td>
-                    <td className="px-6 py-4">
-                      <ScoreDisplay value={acc.scores?.influence_score || 0} />
-                    </td>
-                    <td className="px-6 py-4">
-                      <RiskBadge level={acc.scores?.risk_level} />
-                    </td>
-                    <td className="px-6 py-4">
-                      <span className="text-sm text-gray-700">
-                        {(acc.followers || 0).toLocaleString()}
-                      </span>
-                    </td>
-                    <td className="px-6 py-4">
-                      <span className="text-sm text-gray-700">
-                        {((acc.activity?.avg_engagement_quality || 0) * 100).toFixed(1)}%
-                      </span>
-                    </td>
-                    <td className="px-6 py-4">
-                      <span className="text-sm text-gray-700">
-                        {acc.activity?.posts_count || 0}
-                      </span>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+            filteredAccounts.map((acc) => (
+              <ConnectionCard key={acc.author_id} acc={acc} />
+            ))
           )}
+        </div>
+
+        {/* Desktop/Tablet Table View */}
+        <div className="hidden md:block bg-white rounded-xl border border-gray-200 overflow-hidden">
+          <div className="overflow-x-auto connections-table-wrapper">
+            {loading ? (
+              <div className="p-12 text-center text-gray-500">Loading accounts...</div>
+            ) : filteredAccounts.length === 0 ? (
+              <div className="p-12 text-center text-gray-500">
+                No accounts found. Add test data via API.
+              </div>
+            ) : (
+              <table className="w-full connections-table" data-testid="connections-table">
+                <thead className="bg-gray-50 border-b border-gray-200">
+                  <tr>
+                    <th className="px-4 lg:px-6 py-4 text-left">
+                      <button
+                        onClick={() => handleSort('handle')}
+                        className="flex items-center gap-2 text-sm font-semibold text-gray-600 hover:text-gray-900"
+                      >
+                        Account
+                        <ArrowUpDown className="w-3 h-3" />
+                      </button>
+                    </th>
+                    <th className="px-4 lg:px-6 py-4 text-left">
+                      <button
+                        onClick={() => handleSort('scores.influence_score')}
+                        className="flex items-center gap-2 text-sm font-semibold text-gray-600 hover:text-gray-900"
+                      >
+                        Influence
+                        <ArrowUpDown className="w-3 h-3" />
+                      </button>
+                    </th>
+                    <th className="px-4 lg:px-6 py-4 text-left">
+                      <button
+                        onClick={() => handleSort('scores.risk_level')}
+                        className="flex items-center gap-2 text-sm font-semibold text-gray-600 hover:text-gray-900"
+                      >
+                        Risk
+                        <ArrowUpDown className="w-3 h-3" />
+                      </button>
+                    </th>
+                    <th className="px-4 lg:px-6 py-4 text-left">
+                      <span className="text-sm font-semibold text-gray-600">Followers</span>
+                    </th>
+                    <th className="px-4 lg:px-6 py-4 text-left hidden lg:table-cell">
+                      <span className="text-sm font-semibold text-gray-600">Engagement</span>
+                    </th>
+                    <th className="px-4 lg:px-6 py-4 text-left hidden lg:table-cell">
+                      <span className="text-sm font-semibold text-gray-600">Posts</span>
+                    </th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-gray-100">
+                  {filteredAccounts.map((acc) => (
+                    <tr
+                      key={acc.author_id}
+                      className="hover:bg-gray-50 transition-colors cursor-pointer"
+                    >
+                      <td className="px-4 lg:px-6 py-4">
+                        <Link
+                          to={`/connections/${acc.author_id}`}
+                          className="flex items-center gap-3"
+                          data-testid={`account-link-${acc.author_id}`}
+                        >
+                          <div className="w-10 h-10 bg-gradient-to-br from-blue-400 to-blue-600 rounded-full flex items-center justify-center text-white font-semibold shrink-0">
+                            {acc.handle?.charAt(0).toUpperCase() || '?'}
+                          </div>
+                          <div className="min-w-0">
+                            <div className="font-medium text-gray-900 truncate">@{acc.handle}</div>
+                            <div className="text-xs text-gray-400 truncate hidden lg:block">{acc.author_id}</div>
+                          </div>
+                        </Link>
+                      </td>
+                      <td className="px-4 lg:px-6 py-4">
+                        <ScoreDisplay value={acc.scores?.influence_score || 0} />
+                      </td>
+                      <td className="px-4 lg:px-6 py-4">
+                        <RiskBadge level={acc.scores?.risk_level} />
+                      </td>
+                      <td className="px-4 lg:px-6 py-4">
+                        <span className="text-sm text-gray-700">
+                          {formatNumber(acc.followers)}
+                        </span>
+                      </td>
+                      <td className="px-4 lg:px-6 py-4 hidden lg:table-cell">
+                        <span className="text-sm text-gray-700">
+                          {((acc.activity?.avg_engagement_quality || 0) * 100).toFixed(1)}%
+                        </span>
+                      </td>
+                      <td className="px-4 lg:px-6 py-4 hidden lg:table-cell">
+                        <span className="text-sm text-gray-700">
+                          {acc.activity?.posts_count || 0}
+                        </span>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            )}
+          </div>
         </div>
       </div>
 

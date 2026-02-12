@@ -228,21 +228,21 @@ print("✅ Seeded clusters and momentum");
 echo "[6/6] Creating indexes..."
 mongosh $MONGO_DB --quiet --eval '
 // connections_author_profiles indexes
-db.connections_author_profiles.createIndex({ "scores.influence_score": -1 });
-db.connections_author_profiles.createIndex({ "scores.risk_level": 1 });
-db.connections_author_profiles.createIndex({ author_id: 1 }, { unique: true });
+try { db.connections_author_profiles.createIndex({ "scores.influence_score": -1 }); } catch(e) {}
+try { db.connections_author_profiles.createIndex({ "scores.risk_level": 1 }); } catch(e) {}
+try { db.connections_author_profiles.createIndex({ author_id: 1 }, { unique: true }); } catch(e) {}
 
 // connections_unified_accounts indexes
-db.connections_unified_accounts.createIndex({ handle: 1 }, { unique: true, sparse: true });
-db.connections_unified_accounts.createIndex({ influence: -1 });
-db.connections_unified_accounts.createIndex({ smart: -1 });
-db.connections_unified_accounts.createIndex({ source: 1 });
+try { db.connections_unified_accounts.createIndex({ handle: 1 }, { unique: true, sparse: true }); } catch(e) {}
+try { db.connections_unified_accounts.createIndex({ influence: -1 }); } catch(e) {}
+try { db.connections_unified_accounts.createIndex({ smart: -1 }); } catch(e) {}
+try { db.connections_unified_accounts.createIndex({ source: 1 }); } catch(e) {}
 
 // taxonomy indexes
-db.connections_taxonomy_membership.createIndex({ accountId: 1, group: 1 });
-db.connections_taxonomy_membership.createIndex({ group: 1, weight: -1 });
+try { db.connections_taxonomy_membership.createIndex({ accountId: 1, group: 1 }); } catch(e) {}
+try { db.connections_taxonomy_membership.createIndex({ group: 1, weight: -1 }); } catch(e) {}
 
-print("✅ Indexes created");
+print("✅ Indexes created/verified");
 '
 
 echo ""

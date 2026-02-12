@@ -457,12 +457,16 @@ export async function registerUnifiedRoutes(app: FastifyInstance) {
       ];
     }
     
+    console.log('[Accounts] Query:', JSON.stringify(query), 'Collection:', COLLECTION);
+    
     const items = await db.collection(COLLECTION)
       .find(query)
       .sort({ influence: -1 })
       .skip(parseInt(offset))
       .limit(parseInt(limit))
       .toArray();
+    
+    console.log('[Accounts] Found items:', items.length);
     
     const total = await db.collection(COLLECTION).countDocuments(query);
     

@@ -32,6 +32,7 @@ import {
   RefreshCw,
   X
 } from 'lucide-react';
+import { IconFund, IconProject, IconDAO, IconEcosystem, IconCompany } from '../../icons/FomoIcons';
 
 const API_URL = process.env.REACT_APP_BACKEND_URL || '';
 
@@ -40,11 +41,11 @@ const API_URL = process.env.REACT_APP_BACKEND_URL || '';
 // ============================================================
 
 const BACKER_TYPES = [
-  { value: 'FUND', label: 'Fund', icon: '💰', color: 'green' },
-  { value: 'PROJECT', label: 'Project', icon: '🏗️', color: 'blue' },
-  { value: 'DAO', label: 'DAO', icon: '🏛️', color: 'purple' },
-  { value: 'ECOSYSTEM', label: 'Ecosystem', icon: '🌐', color: 'yellow' },
-  { value: 'COMPANY', label: 'Company', icon: '🏢', color: 'gray' },
+  { value: 'FUND', label: 'Fund', Icon: IconFund, color: 'green' },
+  { value: 'PROJECT', label: 'Project', Icon: IconProject, color: 'blue' },
+  { value: 'DAO', label: 'DAO', Icon: IconDAO, color: 'purple' },
+  { value: 'ECOSYSTEM', label: 'Ecosystem', Icon: IconEcosystem, color: 'yellow' },
+  { value: 'COMPANY', label: 'Company', Icon: IconCompany, color: 'gray' },
 ];
 
 const BACKER_CATEGORIES = [

@@ -1,11 +1,11 @@
 # FOMO - Connections Module PRD
 
-## Версия: 1.1.0
+## Версия: 1.2.0
 ## Дата: 2026-02-12
 
 ---
 
-## Статус развертывания: ✅ ГОТОВО (ожидание куки)
+## Статус: ✅ ГОТОВО С SEED DATA
 
 ### Работающие сервисы:
 | Сервис | Порт | Статус |
@@ -14,146 +14,69 @@
 | Python Proxy | 8001 | ✅ RUNNING |
 | Node.js Backend | 8003 | ✅ RUNNING |
 | MongoDB | 27017 | ✅ RUNNING |
-| Twitter Parser V2 | 5001 | ⏳ Требует запуска |
+| Twitter Parser V2 | 5001 | ⏳ Требует cookies |
 
-### Работающие API:
-- ✅ `/api/health` - Health check
-- ✅ `/api/connections/stats` - Connections статистика
-- ✅ `/api/v4/twitter/accounts` - Twitter accounts (пусто - нужны куки)
-- ✅ `/api/admin/twitter-egress/slots` - Parser slots
+### Seed данные загружены:
+- ✅ 10 профилей в `connections_author_profiles`
+- ✅ 18 unified accounts в `connections_unified_accounts`
+- ✅ 70 taxonomy memberships
+- ✅ 23 twitter accounts
+- ✅ 2 influencer clusters
+
+### Работающие страницы с данными:
+- ✅ `/connections` - 10 аккаунтов (Vitalik, CZ, a16z, paradigm...)
+- ✅ `/connections?preset=SMART` - Unified page с taxonomy
+- ✅ API `/api/connections/accounts` - полный список
+- ✅ API `/api/connections/unified` - facet/preset query
 
 ---
 
-## Что нужно для работы парсера
+## Что нужно для парсинга
 
-### ⚠️ КРИТИЧНО: Загрузка Twitter Cookies
+### ⚠️ Twitter Cookies (для live данных)
 
-Парсер не будет работать без авторизованных cookies Twitter!
+Seed данные статичны. Для получения live данных из Twitter:
 
-**Способы загрузки:**
-
-1. **Chrome Extension** (`/frontend/public/fomo_extension_v1.3.0/`)
-   - Установить расширение
-   - Авторизоваться в Twitter
-   - Export cookies через расширение
-
-2. **API Upload**
+1. **Установить Chrome Extension** (`/frontend/public/fomo_extension_v1.3.0/`)
+2. **Экспортировать cookies** авторизованного Twitter аккаунта
+3. **Загрузить через API**:
    ```bash
    POST /api/v4/twitter/sessions
-   {
-     "label": "Account Name",
-     "cookies": [
-       {"name": "auth_token", "value": "xxx", "domain": ".twitter.com"},
-       {"name": "ct0", "value": "xxx", "domain": ".twitter.com"}
-     ]
-   }
+   { "label": "...", "cookies": [...] }
    ```
 
-### Необходимые cookies:
-| Cookie | Описание |
-|--------|----------|
-| auth_token | Основной токен авторизации |
-| ct0 | CSRF токен |
-| guest_id | Guest ID |
-| twid | Twitter User ID |
-
 ---
 
-## Архитектура модулей
+## Архитектура
 
-### Connections Module
 ```
-modules/connections/
-├── adapters/           # Port implementations
-├── api/                # REST API routes
-├── config/             # Configuration
-├── core/               # Business logic
-│   ├── alerts/         # Alert system
-│   ├── pilot/          # Pilot features
-│   └── scoring/        # Influence scoring
-├── db/                 # Database utilities
-├── jobs/               # Background jobs
-├── ml/                 # ML scoring (v1)
-├── ml2/                # ML scoring (v2)
-├── notifications/      # Telegram notifications
-├── ports/              # External interfaces
-└── index.ts            # Entry point
+Frontend (3000) → Python Proxy (8001) → Node.js Fastify (8003) → MongoDB
+                                              ↓
+                                     Twitter Parser V2 (5001)
 ```
 
-### Twitter Module
-```
-modules/twitter/
-├── accounts/           # Account management
-├── sessions/           # Session management
-├── slots/              # Egress slots
-├── parser/             # Parser integration
-└── twitter.module.ts   # Module registration
-```
+## Seed аккаунты
 
----
-
-## Implemented Features
-
-### ✅ Phase 1 - Core
-- [x] Connections module с plug-in архитектурой
-- [x] Twitter user/session management
-- [x] Egress slots для парсинга
-- [x] Telegram notifications
-- [x] Admin control plane
-
-### ✅ Phase 2 - Analytics
-- [x] Follow Graph v2
-- [x] Cluster detection
-- [x] Bot farm detection
-- [x] Audience quality scoring
-- [x] Authority scoring
-
-### ✅ Phase 3 - ML
-- [x] ML v1 scoring
-- [x] ML v2 with shadow mode
-- [x] Impact tracking
-- [x] Feedback loop
-
-### ⏳ Pending (требуют куки)
-- [ ] Real-time Twitter parsing
-- [ ] Live influence updates
-- [ ] Active monitoring
+| Handle | Category | Influence | Risk |
+|--------|----------|-----------|------|
+| vitalikbuterin | FOUNDER | 990 | Low |
+| cz_binance | FOUNDER | 980 | Low |
+| a16z | VC | 950 | Low |
+| paradigm | VC | 920 | Low |
+| brian_armstrong | FOUNDER | 900 | Low |
+| cobie | KOL | 880 | Low |
+| raoulpal | KOL | 850 | Low |
+| lookonchain | ANALYST | 780 | Low |
+| hsaka | KOL | 750 | Medium |
+| pentoshi | KOL | 720 | Medium |
 
 ---
 
 ## Следующие шаги
 
-1. **Загрузить Twitter cookies** через расширение или API
-2. **Запустить Twitter Parser V2** на порту 5001
-3. **Настроить Telegram бота** для уведомлений
-4. **Добавить influencer targets** для парсинга
-
----
-
-## Environment Variables
-
-### Backend (.env)
-```
-MONGO_URL=mongodb://localhost:27017
-MONGODB_URI=mongodb://localhost:27017/connections_db
-DB_NAME=connections_db
-TELEGRAM_BOT_TOKEN=xxx
-COOKIE_ENC_KEY=xxx (openssl rand -hex 32)
-PARSER_URL=http://localhost:5001
-```
-
-### Frontend (.env)
-```
-REACT_APP_BACKEND_URL=https://your-domain.com
-```
-
----
-
-## Документация
-
-- `/app/README.md` - Полная документация
-- `/app/memory/PRD.md` - Этот файл
-- `/app/backend/src/modules/connections/MODULE_BOUNDARY.md` - Boundary audit
+1. **Загрузить Twitter cookies** для live парсинга
+2. **Запустить Parser V2** на порту 5001
+3. **Сохранить на GitHub**
 
 ---
 

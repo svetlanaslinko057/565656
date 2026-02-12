@@ -800,7 +800,7 @@ function CreateBackerModal({ onClose, onCreate }) {
                   }`}
                   data-testid={`backer-type-${t.value}`}
                 >
-                  <span>{t.icon}</span>
+                  {t.Icon && <t.Icon size={16} />}
                   <span className="text-sm">{t.label}</span>
                 </button>
               ))}

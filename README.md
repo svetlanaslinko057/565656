@@ -195,6 +195,34 @@ curl http://localhost:8001/api/admin/twitter-egress/slots
 curl http://localhost:8001/api/v4/twitter/sessions
 ```
 
+## Быстрый старт
+
+### После клонирования - запустить один раз:
+
+```bash
+# 1. Установка зависимостей
+cd /app/backend && yarn install
+cd /app/frontend && yarn install
+cd /app/twitter-parser-v2 && yarn install
+
+# 2. Инициализация базы данных с seed данными
+chmod +x /app/scripts/seed_all.sh
+/app/scripts/seed_all.sh
+
+# 3. Перезапуск сервисов
+sudo supervisorctl restart backend frontend
+```
+
+### Или полный startup:
+
+```bash
+chmod +x /app/scripts/startup.sh
+/app/scripts/startup.sh
+sudo supervisorctl restart backend frontend
+```
+
+---
+
 ## Seed Data
 
 Проект включает seed данные с реальными Twitter аккаунтами для демонстрации:

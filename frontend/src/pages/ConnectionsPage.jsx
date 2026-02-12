@@ -627,7 +627,9 @@ export default function ConnectionsPage() {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-100">
-                  {filteredAccounts.map((acc) => (
+                  {filteredAccounts.map((acc) => {
+                    const handle = acc.handle || acc.username || acc.author_id;
+                    return (
                     <tr
                       key={acc.author_id}
                       className="hover:bg-gray-50 transition-colors cursor-pointer"
@@ -639,11 +641,11 @@ export default function ConnectionsPage() {
                           data-testid={`account-link-${acc.author_id}`}
                         >
                           <div className="w-10 h-10 bg-gradient-to-br from-blue-400 to-blue-600 rounded-full flex items-center justify-center text-white font-semibold shrink-0">
-                            {acc.handle?.charAt(0).toUpperCase() || '?'}
+                            {handle?.charAt(0).toUpperCase() || '?'}
                           </div>
                           <div className="min-w-0">
-                            <div className="font-medium text-gray-900 truncate">@{acc.handle}</div>
-                            <div className="text-xs text-gray-400 truncate hidden lg:block">{acc.author_id}</div>
+                            <div className="font-medium text-gray-900 truncate">@{handle}</div>
+                            <div className="text-xs text-gray-400 truncate hidden lg:block">{acc.name || acc.author_id}</div>
                           </div>
                         </Link>
                       </td>
@@ -669,7 +671,8 @@ export default function ConnectionsPage() {
                         </span>
                       </td>
                     </tr>
-                  ))}
+                    );
+                  })}
                 </tbody>
               </table>
             )}

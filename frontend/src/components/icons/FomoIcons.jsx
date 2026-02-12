@@ -422,6 +422,14 @@ export const FomoIcons = {
   network: IconNetwork,
   radar: IconRadar,
   signal: IconSignal,
+  // Narrative states
+  seeding: IconSeeding,
+  ignition: IconIgnition,
+  expansion: IconExpansion,
+  target: IconTarget,
+  fire: IconFire,
+  decay: IconDecay,
+  warning: IconWarning,
 };
 
 export default FomoIcons;

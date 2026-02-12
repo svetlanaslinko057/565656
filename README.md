@@ -195,6 +195,43 @@ curl http://localhost:8001/api/admin/twitter-egress/slots
 curl http://localhost:8001/api/v4/twitter/sessions
 ```
 
+## Seed Data
+
+Проект включает seed данные с реальными Twitter аккаунтами для демонстрации:
+
+### Автоматическая инициализация
+```bash
+# Запустить startup script
+/app/scripts/startup.sh
+```
+
+### Включённые аккаунты (10 профилей)
+
+| Handle | Category | Influence | Followers |
+|--------|----------|-----------|-----------|
+| @vitalikbuterin | FOUNDER | 990 | 5.2M |
+| @cz_binance | FOUNDER | 980 | 8.9M |
+| @a16z | VC | 950 | 1.2M |
+| @paradigm | VC | 920 | 450K |
+| @brian_armstrong | FOUNDER | 900 | 1.5M |
+| @cobie | KOL | 880 | 890K |
+| @raoulpal | KOL | 850 | 1.1M |
+| @lookonchain | ANALYST | 780 | 780K |
+| @hsaka | KOL | 750 | 220K |
+| @pentoshi | KOL | 720 | 680K |
+
+### MongoDB коллекции с данными
+
+| Collection | Records | Description |
+|------------|---------|-------------|
+| connections_author_profiles | 10 | Main profiles for Connections page |
+| connections_unified_accounts | 18 | Unified accounts for Unified page |
+| connections_taxonomy_membership | 70 | Taxonomy labels |
+| twitter_accounts | 23 | Twitter accounts data |
+| influencer_clusters | 2 | Cluster data |
+
+---
+
 ## Загрузка Twitter Cookies
 
 ### ⚠️ ВАЖНО: Без куки парсер не работает!

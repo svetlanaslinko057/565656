@@ -1,20 +1,30 @@
 import React, { useState, useEffect } from 'react';
 import { TrendingUp, Zap, Target, Users, RefreshCw, Sparkles, BarChart3, ArrowUpRight, ArrowDownRight, Layers } from 'lucide-react';
+import { IconSeeding, IconIgnition, IconExpansion, IconWarning, IconDecay, IconFire } from '../../components/icons/FomoIcons';
 
 const API_URL = process.env.REACT_APP_BACKEND_URL;
 
+// Icon components for narrative states
+const NARRATIVE_STATE_ICONS = {
+  SEEDING: IconSeeding,
+  IGNITION: IconIgnition,
+  EXPANSION: IconExpansion,
+  SATURATION: IconWarning,
+  DECAY: IconDecay,
+};
+
 const NARRATIVE_STATE_COLORS = {
-  SEEDING: { bg: 'bg-purple-100', text: 'text-purple-700', color: '#8b5cf6', icon: '🌱' },
-  IGNITION: { bg: 'bg-green-100', text: 'text-green-700', color: '#22c55e', icon: '🚀' },
-  EXPANSION: { bg: 'bg-amber-100', text: 'text-amber-700', color: '#f59e0b', icon: '📈' },
-  SATURATION: { bg: 'bg-orange-100', text: 'text-orange-700', color: '#f97316', icon: '⚠️' },
-  DECAY: { bg: 'bg-gray-100', text: 'text-gray-600', color: '#9ca3af', icon: '📉' },
+  SEEDING: { bg: 'bg-purple-100', text: 'text-purple-700', color: '#8b5cf6' },
+  IGNITION: { bg: 'bg-green-100', text: 'text-green-700', color: '#22c55e' },
+  EXPANSION: { bg: 'bg-amber-100', text: 'text-amber-700', color: '#f59e0b' },
+  SATURATION: { bg: 'bg-orange-100', text: 'text-orange-700', color: '#f97316' },
+  DECAY: { bg: 'bg-gray-100', text: 'text-gray-600', color: '#9ca3af' },
 };
 
 const SURFACE_COLORS = {
-  IMMEDIATE_MOMENTUM: { bg: 'bg-red-500', text: 'text-white', icon: '🔥', label: 'Immediate Momentum' },
-  NARRATIVE_ROTATION: { bg: 'bg-blue-500', text: 'text-white', icon: '🔄', label: 'Narrative Rotation' },
-  CROWDED_TRADE: { bg: 'bg-orange-500', text: 'text-white', icon: '👥', label: 'Crowded Trade' },
+  IMMEDIATE_MOMENTUM: { bg: 'bg-red-500', text: 'text-white', Icon: IconFire, label: 'Immediate Momentum' },
+  NARRATIVE_ROTATION: { bg: 'bg-blue-500', text: 'text-white', Icon: RefreshCw, label: 'Narrative Rotation' },
+  CROWDED_TRADE: { bg: 'bg-orange-500', text: 'text-white', Icon: Users, label: 'Crowded Trade' },
 };
 
 export default function NarrativesPage() {

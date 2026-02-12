@@ -119,7 +119,7 @@ const TypeBadge = ({ type }) => {
   
   return (
     <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded border text-xs font-medium ${colors[config.color]}`}>
-      {config.icon} {config.label}
+      {config.Icon && <config.Icon size={14} />} {config.label}
     </span>
   );
 };

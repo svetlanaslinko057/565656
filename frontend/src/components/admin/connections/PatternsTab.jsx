@@ -330,11 +330,14 @@ export default function PatternsTab({ token }) {
                     </td>
                     <td className="py-3 px-2">
                       <div className="flex gap-1">
-                        {(p.flags || []).map(f => (
+                        {(p.flags || []).map(f => {
+                          const FlagIcon = PATTERN_ICONS[f];
+                          return (
                           <span key={f} className="text-lg" title={f}>
-                            {PATTERN_ICONS[f] || '❓'}
+                            {FlagIcon ? <FlagIcon size={18} /> : <span>?</span>}
                           </span>
-                        ))}
+                          );
+                        })}
                       </div>
                     </td>
                     <td className="py-3 px-2">

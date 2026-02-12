@@ -560,7 +560,7 @@ export async function registerUnifiedRoutes(app: FastifyInstance) {
   app.get('/api/connections/accounts', async (req: any) => {
     const { limit = '100', offset = '0', search } = req.query;
     
-    const query: any = { source: 'PLAYWRIGHT_PARSER' };
+    const query: any = {};
     if (search) {
       query.$or = [
         { handle: { $regex: search, $options: 'i' } },

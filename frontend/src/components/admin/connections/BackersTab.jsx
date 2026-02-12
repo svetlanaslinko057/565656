@@ -412,7 +412,7 @@ export default function BackersTab({ token }) {
             >
               <option value="">All Types</option>
               {BACKER_TYPES.map(t => (
-                <option key={t.value} value={t.value}>{t.icon} {t.label}</option>
+                <option key={t.value} value={t.value}>{t.label}</option>
               ))}
             </select>
           </div>

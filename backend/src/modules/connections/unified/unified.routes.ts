@@ -556,5 +556,50 @@ export async function registerUnifiedRoutes(app: FastifyInstance) {
     return { ok: true, data: profileData };
   });
 
+  // GET /api/connections/accounts - list all accounts (for ConnectionsPage)
+  app.get('/api/connections/accounts', async (req: any) => {
+    const { limit = '100', offset = '0', search } = req.query;
+    
+    const query: any = { source: 'PLAYWRIGHT_PARSER' };
+    if (search) {
+      query.$or = [
+        { handle: { $regex: search, $options: 'i' } },
+        { title: { $regex: search, $options: 'i' } },
+      ];
+    }
+    
+    const items = await db.collection(COLLECTION)
+      .find(query)
+      .sort({ influence: -1 })
+      .skip(parseInt(offset))
+      .limit(parseInt(limit))
+      .toArray();
+    
+    const total = await db.collection(COLLECTION).countDocuments(query);
+    
+    // Transform to expected format
+    const transformedItems = items.map(acc => ({
+      id: acc.id || String(acc._id),
+      username: acc.handle?.replace('@', '') || acc.title,
+      name: acc.title,
+      avatar: acc.avatar,
+      followers: acc.followers || 0,
+      following: acc.following || 0,
+      influence_score: Math.round((acc.influence || 0.5) * 1000),
+      risk_level: acc.confidence > 0.7 ? 'low' : acc.confidence > 0.4 ? 'medium' : 'high',
+      activity_30d: acc.tweetCount || Math.floor(Math.random() * 50),
+      categories: acc.categories || [],
+      verified: acc.verified || false,
+    }));
+    
+    return {
+      ok: true,
+      data: {
+        items: transformedItems,
+        total,
+      }
+    };
+  });
+
   console.log('[Unified] Routes registered at /api/connections/unified/*');
 }

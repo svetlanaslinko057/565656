@@ -223,6 +223,32 @@ sudo supervisorctl restart backend frontend
 
 ---
 
+## Мобильный адаптив (Connections)
+
+### Поддерживаемые устройства
+
+| Viewport | Breakpoint | Layout |
+|----------|------------|--------|
+| Mobile | < 768px | Карточки, 2x2 stats, скролл tabs |
+| Tablet | 768px - 1023px | Таблица с горизонтальным скроллом |
+| Desktop | ≥ 1024px | Полная таблица 6 колонок |
+
+### Особенности мобильной версии
+
+- **Карточки вместо таблицы** - на экранах < 768px таблица заменяется на карточки
+- **Горизонтальный скролл tabs** - навигация (Influencers, Graph, Radar, etc.) прокручивается
+- **Stats 2x2 grid** - на мобильном статистика в 2 колонки
+- **Touch-friendly** - минимальная высота кнопок 44px
+- **Safe areas** - поддержка iPhone notch
+- **iOS zoom prevention** - select с font-size 16px
+
+### CSS файлы
+
+- `/app/frontend/src/styles/connections-mobile.css` - мобильные стили
+- `/app/frontend/src/styles/connections-polish.css` - анимации и улучшения
+
+---
+
 ## Seed Data
 
 Проект включает seed данные с реальными Twitter аккаунтами для демонстрации:

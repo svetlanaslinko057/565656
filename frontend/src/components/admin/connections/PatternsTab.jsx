@@ -22,18 +22,19 @@ import {
   Zap
 } from 'lucide-react';
 import { Button } from '../../ui/button';
+import { IconLikeFarm, IconSpikePump, IconOverlapFarm } from '../../icons/FomoIcons';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || '';
 
-// Pattern Icons
+// Pattern Icons - SVG components
 const PATTERN_ICONS = {
-  LIKE_FARM: '❤️',
-  SPIKE_PUMP: '📈',
-  OVERLAP_FARM: '🔗',
+  LIKE_FARM: IconLikeFarm,
+  SPIKE_PUMP: IconSpikePump,
+  OVERLAP_FARM: IconOverlapFarm,
 };
 
 // Stat Card
-const StatCard = ({ label, value, color = 'gray', icon }) => {
+const StatCard = ({ label, value, color = 'gray', icon: Icon }) => {
   const colors = {
     green: 'bg-green-50 text-green-600 border-green-100',
     yellow: 'bg-yellow-50 text-yellow-600 border-yellow-100',
@@ -46,7 +47,7 @@ const StatCard = ({ label, value, color = 'gray', icon }) => {
     <div className={`rounded-xl p-4 border ${colors[color]}`}>
       <div className="flex items-center justify-between mb-2">
         <span className="text-xs font-medium opacity-75">{label}</span>
-        <span className="text-xl">{icon}</span>
+        {Icon && <Icon size={20} />}
       </div>
       <span className="text-2xl font-bold">{value}</span>
     </div>
